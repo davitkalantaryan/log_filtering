@@ -14,6 +14,7 @@
 #include <sys/select.h>
 #include <preload_for_log_correction.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 #ifdef __USE_POSIX199309
 #undef sa_handler
@@ -37,6 +38,21 @@ static int          s_vPipesStdOut[2]={-1,-1},s_vPipesStdErr[2]={-1,-1};
 static int          s_stdoutCopy=-1, s_stderrCopy=-1;
 
 BEGIN_C_DECL2
+
+
+void HandleUserStdout(const void* a_buffer, size_t a_unBufferSize )
+{
+    //dprintf(s_stdoutCopy,"readSize=%d, buffer=%." READ_BUFFER_MAX_SIZE_STR "s", static_cast<int>(a_unBufferSize),static_cast<const char*>(a_buffer) );
+    write(s_stdoutCopy,a_buffer,a_unBufferSize);
+}
+
+
+void HandleUserStderr(const void* a_buffer, size_t a_unBufferSize )
+{
+    //dprintf(s_stderrCopy,"readSize=%d, buffer=%." READ_BUFFER_MAX_SIZE_STR "s", static_cast<int>(a_unBufferSize),static_cast<const char*>(a_buffer) );
+    write(s_stderrCopy,a_buffer,a_unBufferSize);
+}
+
 
 PRELOAD_OUT_EXP int PrintOutNoRecursion(const char* a_cpcFormat, ...)
 {
@@ -71,17 +87,6 @@ PRELOAD_OUT_EXP ssize_t WriteErrNoRecursion(const void* a_buffer, size_t a_buffe
 }
 
 
-void HandleUserStdout(const void* a_buffer, size_t a_unBufferSize )
-{
-    dprintf(s_stdoutCopy,"readSize=%d, buffer=%." READ_BUFFER_MAX_SIZE_STR "s", static_cast<int>(a_unBufferSize),static_cast<const char*>(a_buffer) );
-}
-
-
-void HandleUserStderr(const void* a_buffer, size_t a_unBufferSize )
-{
-    dprintf(s_stderrCopy,"readSize=%d, buffer=%." READ_BUFFER_MAX_SIZE_STR "s", static_cast<int>(a_unBufferSize),static_cast<const char*>(a_buffer) );
-}
-
 END_C_DECL2
 
 
@@ -97,7 +102,8 @@ static void test_preload_lib_init (void)
     aSigAction.sa_restorer = nullptr;
     aSigAction.sa_handler2 = [](int){};
     sigaction(SIGUSR1,&aSigAction,&oldAction);
-    sigsuspend(&oldAction.sa_mask);
+    //sigsuspend(&oldAction.sa_mask);
+    getchar();
     sigaction(SIGUSR1,&oldAction,nullptr);
 #endif  // #ifdef DO_LIB_DEBUG
 

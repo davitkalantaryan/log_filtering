@@ -8,6 +8,7 @@
 #include <sys/timeb.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <common/hashtbl.hpp>
 
 #define MIN_PRINT_RATE          "MIN_PRINT_RATE_MS"
 #define MIN_PRINT_RATE_OUT      "MIN_PRINT_OUT_RATE_MS"
