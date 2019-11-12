@@ -15,6 +15,7 @@ win32{
 message("!!!!!!!!!!! test_log_filtering_lib.pro")
 include( $${PWD}/../../common/common_qt/sys_common.pri )
 
+LIBS += -lpthread
 
 INCLUDEPATH += $${PWD}/../../../include
 

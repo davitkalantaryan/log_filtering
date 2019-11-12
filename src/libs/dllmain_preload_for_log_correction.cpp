@@ -13,15 +13,9 @@
 #include <stdio.h>
 #include <sys/select.h>
 #include <preload_for_log_correction.h>
-#include <stdarg.h>
 #include <stdio.h>
 
-#ifdef __USE_POSIX199309
-#undef sa_handler
-# define sa_handler2	__sigaction_handler.sa_handler
-#else
-# define sa_handler2    sa_handler
-#endif
+
 
 #define READ_BUFFER_MAX_SIZE        4096
 //#define READ_BUFFER_MAX_SIZE_STR    #READ_BUFFER_MAX_SIZE
@@ -54,11 +48,24 @@ void HandleUserStderr(const void* a_buffer, size_t a_unBufferSize )
 }
 
 
+PRELOAD_OUT_EXP int vPrintOutNoRecursion(const char* a_cpcFormat, va_list a_argList)
+{
+    return vdprintf(s_stdoutCopy,a_cpcFormat,a_argList);
+}
+
+
+PRELOAD_OUT_EXP int vPrintErrNoRecursion(const char* a_cpcFormat, va_list a_argList)
+{
+    return vdprintf(s_stderrCopy,a_cpcFormat,a_argList);
+}
+
+
 PRELOAD_OUT_EXP int PrintOutNoRecursion(const char* a_cpcFormat, ...)
 {
     int nReturn;
     va_list argList;
     va_start(argList,a_cpcFormat);
+    //nReturn = vPrintOutNoRecursion(a_cpcFormat,argList);
     nReturn = vdprintf(s_stdoutCopy,a_cpcFormat,argList);
     va_end(argList);
     return nReturn;
@@ -70,6 +77,7 @@ PRELOAD_OUT_EXP int PrintErrNoRecursion(const char* a_cpcFormat, ...)
     int nReturn;
     va_list argList;
     va_start(argList,a_cpcFormat);
+    //nReturn = vPrintErrNoRecursion(a_cpcFormat,argList);
     nReturn = vdprintf(s_stderrCopy,a_cpcFormat,argList);
     va_end(argList);
     return nReturn;

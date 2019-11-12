@@ -5,6 +5,7 @@
 .tmp/*
 
 /prj/*/build*
+/scripts/*/*.txt
 
 contrib/sys/*/*/*/*
 contrib/sys/*/lib/*

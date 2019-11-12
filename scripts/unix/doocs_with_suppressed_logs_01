@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# file:			doocs_with_suppressed_logs_01
+# created on:	2019 Nov 12
+# created by:	D. Kalantaryan
+#
+# example: $ export LD_PRELOAD=libtest_preload_lib.so;./victim_app; unset LD_PRELOAD 
+#
+
+
+# This should be calculated, not hardcoded
+repoBase=/afs/ifh.de/group/pitz/doocs/develop/kalantar/dev/log_filtering
+
+lsbCode=`lsb_release -c | cut -f 2`
+
+programmToCall="$1"
+shift
+
+
+export LD_LIBRARY_PATH=${repoBase}/sys/$lsbCode/lib:$LD_LIBRARY_PATH
+export LD_PRELOAD=libtest_preload_lib.so
+$programmToCall "$@" >| aaa.txt
+unset LD_PRELOAD

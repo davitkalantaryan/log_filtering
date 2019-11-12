@@ -17,4 +17,4 @@ message("!!!!!!!!!!! victim_app.pro")
 include( $${PWD}/../../common/common_qt/sys_common.pri )
 
 SOURCES += \
-    $${PWD}/../../../src/tests/main_victim_app.cpp
+    $${PWD}/../../../src/tests/main_test_doocs_server.cpp

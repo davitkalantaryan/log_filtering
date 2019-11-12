@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# file:			doocs_with_suppressed_logs_02
+# created on:	2019 Nov 12
+# created by:	D. Kalantaryan
+#
+# example: $ export LD_PRELOAD=liblog_filtering_env_based.so;./test_doocs_server; unset LD_PRELOAD
+#
+
+unset MIN_PRINT_PERIOD_MS
+
+export PRINT_DELIMATOR_SYMBOL='\n'
+export MIN_PRINT_PERIOD_MS=5000
+export MIN_PRINT_OUT_PERIOD_MS=-1
+export MIN_PRINT_ERR_PERIOD_MS=-1
+export MIN_PRINT_SAME_TEXT_PERIOD_MS=5000
+export MIN_PRINT_OUT_SAME_TEXT_PERIOD_MS=-1
+export MIN_PRINT_ERR_SAME_TEXT_PERIOD_MS=-1
+export LOG_FILE_SIZE_FOR_TRUNCATION=-1
+
+
+# This should be calculated, not hardcoded
+repoBase=/afs/ifh.de/group/pitz/doocs/develop/kalantar/dev/log_filtering
+
+lsbCode=`lsb_release -c | cut -f 2`
+
+programmToCall="$1"
+shift
+
+
+export LD_LIBRARY_PATH=${repoBase}/sys/$lsbCode/lib:$LD_LIBRARY_PATH
+export LD_PRELOAD=liblog_filtering_env_based.so
+#$programmToCall "$@" >> ${programmToCall}.log  2>&1
+$programmToCall "$@"
+unset LD_PRELOAD

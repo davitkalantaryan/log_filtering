@@ -1,6 +1,9 @@
 
 TEMPLATE = lib
 
+#DEFINES += DO_LIB_DEBUG
+DEFINES += DO_ENV_BASED_LIB_DEBUG
+
 win32{
 
 } else {
@@ -12,6 +15,13 @@ win32{
 
 message("!!!!!!!!!!! log_filtering_env_based.pro")
 include( $${PWD}/../../common/common_qt/sys_common.pri )
+
+QT -= gui
+QT -= core
+QT -= widgets
+CONFIG -= qt
+
+LIBS += -lpthread
 
 INCLUDEPATH += $${PWD}/../../../include
 INCLUDEPATH += $${PWD}/../../../contrib/cpp-raft/include
